@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { fetchRandomQuote } from '../../features/quotes/quotesSlice';
 
 const QuoteContainer = styled.div`
   max-width: 800px;
@@ -20,17 +22,45 @@ const QuoteAuthor = styled.cite`
   font-style: normal;
 `;
 
+const LoadingText = styled.div`
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+`;
+
 const Quote = () => {
-  // Placeholder sitat inntil vi implementerer Quotable API
-  const defaultQuote = {
-    content: "Livet er det som skjer mens du er opptatt med å legge andre planer.",
-    author: "John Lennon"
-  };
+  const dispatch = useDispatch();
+  const { currentQuote, status } = useSelector(state => state.quotes);
+  
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchRandomQuote());
+    }
+  }, [dispatch, status]);
+
+  if (status === 'loading') {
+    return (
+      <QuoteContainer>
+        <LoadingText>Henter nytt sitat...</LoadingText>
+      </QuoteContainer>
+    );
+  }
+
+  if (status === 'failed') {
+    return (
+      <QuoteContainer>
+        <LoadingText>Kunne ikke hente sitat. Prøv igjen senere.</LoadingText>
+      </QuoteContainer>
+    );
+  }
+
+  if (!currentQuote) {
+    return null;
+  }
 
   return (
     <QuoteContainer>
-      <QuoteText>"{defaultQuote.content}"</QuoteText>
-      <QuoteAuthor>- {defaultQuote.author}</QuoteAuthor>
+      <QuoteText>"{currentQuote.content}"</QuoteText>
+      <QuoteAuthor>- {currentQuote.author}</QuoteAuthor>
     </QuoteContainer>
   );
 };

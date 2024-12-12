@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { fetchRandomImage } from '../../features/images/imagesSlice';
+import { fetchRandomQuote } from '../../features/quotes/quotesSlice';
 
 const ImageBackground = styled.div`
   position: absolute;
@@ -63,20 +64,23 @@ const PhotoCredit = styled.div`
 
 const ImageCycler = () => {
   const dispatch = useDispatch();
-  const { currentImage, status } = useSelector(state => state.images);
+  const { currentImage, status: imageStatus } = useSelector(state => state.images);
+  const { status: quoteStatus } = useSelector(state => state.quotes);
   
   useEffect(() => {
-    if (status === 'idle') {
+    if (imageStatus === 'idle') {
       dispatch(fetchRandomImage());
     }
-  }, [dispatch, status]);
+  }, [dispatch, imageStatus]);
 
-  const handleNextImage = () => {
+  const handleNext = () => {
     dispatch(fetchRandomImage());
+    dispatch(fetchRandomQuote());
   };
 
   const defaultImage = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05';
   const imageUrl = currentImage?.url || defaultImage;
+  const isLoading = imageStatus === 'loading' || quoteStatus === 'loading';
 
   return (
     <>
@@ -93,8 +97,8 @@ const ImageCycler = () => {
           </a>
         </PhotoCredit>
       )}
-      <NextButton onClick={handleNextImage} disabled={status === 'loading'}>
-        {status === 'loading' ? 'Laster...' : 'Neste bilde'}
+      <NextButton onClick={handleNext} disabled={isLoading}>
+        {isLoading ? 'Henter...' : 'Neste'}
       </NextButton>
     </>
   );
