@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { fetchWeather } from '../../features/weather/weatherSlice';
 
 const WeatherContainer = styled.div`
   display: flex;
@@ -37,26 +38,52 @@ const Location = styled.span`
   color: #666;
 `;
 
+const ErrorText = styled.span`
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+`;
+
 const WeatherWidget = () => {
-  const weather = useSelector(state => state.weather.data);
   const dispatch = useDispatch();
+  const { data: weather, status, error } = useSelector(state => state.weather);
   
   useEffect(() => {
-    // Her kan vi senere legge til logikk for å hente vær-data
-  }, [dispatch]);
+    if (status === 'idle') {
+      dispatch(fetchWeather());
+    }
+  }, [dispatch, status]);
+
+  if (status === 'loading') {
+    return (
+      <WeatherContainer>
+        <ErrorText>Henter vær...</ErrorText>
+      </WeatherContainer>
+    );
+  }
+
+  if (status === 'failed') {
+    return (
+      <WeatherContainer>
+        <ErrorText>{error}</ErrorText>
+      </WeatherContainer>
+    );
+  }
+
+  if (!weather) {
+    return null;
+  }
 
   return (
     <WeatherContainer>
       <WeatherIcon>
-        {weather?.icon && (
-          <img 
-            src={`http://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-            alt="Værikon"
-          />
-        )}
+        <img 
+          src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+          alt={weather.description}
+        />
       </WeatherIcon>
-      <Temperature>{weather?.temp ? `${Math.round(weather.temp)}°C` : '--°C'}</Temperature>
-      <Location>{weather?.city || 'Laster...'}</Location>
+      <Temperature>{weather.temp}°C</Temperature>
+      <Location>{weather.city}</Location>
     </WeatherContainer>
   );
 };
