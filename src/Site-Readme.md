@@ -22,7 +22,7 @@ Inspirerende Tanker er designet for å være et daglig verktøy som kombinerer p
 - **API Integrasjoner:**
   - OpenWeather API for værinformasjon
   - Unsplash API for dynamiske bakgrunnsbilder
-  - Quotable API for inspirerende sitater
+  - API Ninjas for inspirerende sitater
 
 ## 📦 Prosjektstruktur
 
@@ -102,8 +102,9 @@ css:src/Site-Readme.md
 3. Opprett en `.env` fil med følgende API-nøkler:
 
    ```bash
-   REACT_APP_WEATHER_API_KEY=din_openweather_api_nøkkel
+   REACT_APP_OPENWEATHER_API_KEY=din_openweather_api_nøkkel
    REACT_APP_UNSPLASH_API_KEY=din_unsplash_api_nøkkel
+   REACT_APP_NINJA_API_KEY=din_ninja_api_nøkkel
    ```
 
 4. Start utviklingsserveren:
@@ -126,10 +127,12 @@ css:src/Site-Readme.md
 - Parametere: `query` (søkeord), `orientation` (landscape)
 - Respons: Høykvalitets bakgrunnsbilder
 
-### Quotable API
+### API Ninjas
 
-- Endpoint: `https://api.quotable.io/random`
-- Respons: Sitat og forfatter
+- Endpoint: `https://api.api-ninjas.com/v1/quotes`
+- Parametere: `category` (inspirational)
+- Headers: `X-Api-Key`
+- Respons: Sitat, forfatter og kategori
 
 ## 🔜 Fremtidige Forbedringer
 

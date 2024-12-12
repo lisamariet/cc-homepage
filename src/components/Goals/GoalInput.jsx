@@ -11,27 +11,46 @@ const Form = styled.form`
 
 const Input = styled.input`
   flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
   font-size: 1rem;
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  }
+
+  &::placeholder {
+    color: #999;
   }
 `;
 
 const Button = styled.button`
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   background: var(--primary);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: var(--primary-dark);
+    background: #3a80d2;
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -53,9 +72,12 @@ const GoalInput = () => {
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Skriv inn ditt mål..."
+        placeholder="Navn på oppgave..."
+        autoFocus
       />
-      <Button type="submit">Legg til</Button>
+      <Button type="submit" disabled={!text.trim()}>
+        Legg til
+      </Button>
     </Form>
   );
 };

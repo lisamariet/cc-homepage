@@ -19,7 +19,7 @@ const Logo = styled.h1`
 const Header = () => {
   return (
     <HeaderContainer>
-      <Logo>Friske Tanker</Logo>
+      <Logo>Inspirerende tanker</Logo>
       <WeatherWidget />
     </HeaderContainer>
   );

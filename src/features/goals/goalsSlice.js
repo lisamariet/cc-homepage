@@ -14,8 +14,7 @@ const goalsSlice = createSlice({
       state.goals.push({
         id: Date.now(),
         text: action.payload,
-        completed: false,
-        createdAt: new Date().toISOString()
+        completed: false
       });
     },
     toggleGoal: (state, action) => {

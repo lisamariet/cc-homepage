@@ -57,7 +57,7 @@ const WeatherWidget = () => {
   if (status === 'loading') {
     return (
       <WeatherContainer>
-        <ErrorText>Henter vær...</ErrorText>
+        <ErrorText>Henter værdata...</ErrorText>
       </WeatherContainer>
     );
   }
