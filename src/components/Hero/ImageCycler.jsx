@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { fetchRandomImage } from '../../features/images/imagesSlice';
 
 const ImageBackground = styled.div`
   position: absolute;
@@ -9,7 +11,7 @@ const ImageBackground = styled.div`
   bottom: 0;
   background-size: cover;
   background-position: center;
-  background-image: url(${props => props.imageUrl});
+  background-image: url(${({ $imageUrl }) => $imageUrl});
   transition: opacity 0.5s ease-in-out;
   
   &::after {
@@ -40,14 +42,60 @@ const NextButton = styled.button`
   }
 `;
 
-const ImageCycler = () => {
-  // Placeholder bilde inntil vi implementerer Unsplash API
-  const defaultImage = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05';
+const PhotoCredit = styled.div`
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
+  z-index: 3;
+  color: white;
+  font-size: 0.8rem;
+  opacity: 0.8;
   
+  a {
+    color: white;
+    text-decoration: underline;
+    
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+`;
+
+const ImageCycler = () => {
+  const dispatch = useDispatch();
+  const { currentImage, status } = useSelector(state => state.images);
+  
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchRandomImage());
+    }
+  }, [dispatch, status]);
+
+  const handleNextImage = () => {
+    dispatch(fetchRandomImage());
+  };
+
+  const defaultImage = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05';
+  const imageUrl = currentImage?.url || defaultImage;
+
   return (
     <>
-      <ImageBackground imageUrl={defaultImage} />
-      <NextButton>Neste bilde</NextButton>
+      <ImageBackground $imageUrl={imageUrl} />
+      {currentImage && (
+        <PhotoCredit>
+          Foto av{' '}
+          <a 
+            href={currentImage.photographerUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            {currentImage.photographer}
+          </a>
+        </PhotoCredit>
+      )}
+      <NextButton onClick={handleNextImage} disabled={status === 'loading'}>
+        {status === 'loading' ? 'Laster...' : 'Neste bilde'}
+      </NextButton>
     </>
   );
 };
